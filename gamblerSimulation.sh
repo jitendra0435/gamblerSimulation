@@ -58,7 +58,6 @@
 
    }
  gambler
-# echo "total amount win or loss " $totalAmount
 
 
 
