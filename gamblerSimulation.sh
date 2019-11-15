@@ -2,6 +2,7 @@
 
    STAKE=100 
    totalAmount=0
+   amount=0
    betAmountpergame=1
    numberOfdaysforplay=20
    win=0
@@ -10,21 +11,21 @@
    percent=50
    numberofdayloose=0
    numberofdaywin=0
+   luckday=0
+   unLuckDay=0 
+   count=0
    MINAMOUNTFORPLAY=$(( $STAKE*$percent/100))
    MAXAMOUNTFORPLAY=$(( $STAKE+$MINAMOUNTFORPLAY))
 
-   declare -A dayHistory
+   declare -A totalAmount1
    function bet()
    {
      checkWinOrloose=$((RANDOM%2))
      if [ $checkWinOrloose -eq 1 ]
       then
-      win=$(( $win+1))
-      stakeValueperDay=$(( $stakeValueperDay+$betAmountpergame ))
+       stakeValueperDay=$(( $stakeValueperDay+$betAmountpergame ))
       else
-      loose=$(( $loose+1))
-      stakeValueperDay=$(( $stakeValueperDay-$betAmountpergame ))
-
+       stakeValueperDay=$(( $stakeValueperDay-$betAmountpergame ))
      fi
    }
 
@@ -32,32 +33,29 @@
     {
      for ((day=1;day<=20;day++ ))
       do
-       dictionary
-       stakeValueperDay=100 
+       stakeValueperDay=100
        while [ $stakeValueperDay -lt  $MAXAMOUNTFORPLAY  ] && [ $stakeValueperDay -gt  $MINAMOUNTFORPLAY ]
         do
-        bet
-      done
-     done
-   }
+         bet
+        done
+         amount=$(($stakeValueperDay-$STAKE))
+         totalAmount=$(($totalAmount+$amount))
+         count=$(($count+1))
+         totalAmount1[$count]=$totalAmount
+        echo $totalAmount 
+ 
+        if [ $amount -eq $MINAMOUNTFORPLAY ]
+         then
+            ((win++))
+         else
+            ((loose++))
+        fi
+        done
+       luckyDay=$(printf "%s\n" ${totalAmount1[@]} | sort -nr | head -1 )
+       unLuckyDay=$(printf "%s\n" ${totalAmount1[@]} |sort -nr | tail -1 )    
+       echo "lucliest day" ${totalAmount1[$luckyDay]}
+       echo "unluckiestsd day" ${totalAmount1[$unLuckyDay]}
+    
+ }
+ gambler
 
-  function dictionary
-  {
-       if [ $stakeValueperDay -eq $MINAMOUNTFORPLAY ]
-        then
-        numberofdaywin=$(($numberofdaywin+1))
-        dayHistory[$day]=$(($stakeValueperDay-$STAKE))
-        totalAmount=$(($totalAmount-$MINAMOUNTFORPLAY))
-
-        else
-        numberofdayloose=$(($numberofdayloose+1))
-        dayHistory[$day]=$(($stakeValueperDay-$STAKE))
-        totalAmount=$(($totalAmount+$stakeValueperDay-$STAKE))
-      fi
-
-  }
-
-  gambler
-  echo ${dayHistory[@]}
-  echo "number of day looose" $numberofdayloose
-  echo "number of day win " $numberofdaywin
