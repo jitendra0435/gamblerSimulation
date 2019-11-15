@@ -42,7 +42,7 @@
          totalAmount=$(($totalAmount+$amount))
          count=$(($count+1))
          totalAmount1[$count]=$totalAmount
-        echo $totalAmount 
+         echo $totalAmount 
  
         if [ $amount -eq $MINAMOUNTFORPLAY ]
          then
@@ -52,10 +52,8 @@
         fi
         done
        luckyDay=$(printf "%s\n" ${totalAmount1[@]} | sort -nr | head -1 )
-       unLuckyDay=$(printf "%s\n" ${totalAmount1[@]} |sort -nr | tail -1 )    
-       echo "lucliest day" ${totalAmount1[$luckyDay]}
-       echo "unluckiestsd day" ${totalAmount1[$unLuckyDay]}
-    
+       unLuckyDay=$(printf "%s\n" ${totalAmount1[@]} |sort -nr | tail -1 )
+
  }
  gambler
 
