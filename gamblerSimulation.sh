@@ -1,63 +1,74 @@
-  #!/bin/bash -x
+cho "welcome gamble program"
 
-   STAKE=100 
-   totalAmount=0
-   betAmountpergame=1
-   numberOfdaysforplay=20
-   win=0
-   loose=0
-   stakeValueperDay=100
-   percent=50
-   numberofdayloose=0
-   numberofdaywin=0
-   MINAMOUNTFORPLAY=$(( $STAKE*$percent/100))
-   MAXAMOUNTFORPLAY=$(( $STAKE+$MINAMOUNTFORPLAY))
+    #constants
+    STAKE=100 
+    NUMBER_OF_DAYS=20
+    PERCENT=50
+    MIN_AMOUNT_FORPLAY=$(( $STAKE*$PERCENT/100))
+    MAX_AMOUNT_FORPLAY=$(( $STAKE+$MIN_AMOUNT_FORPLAY))
+    #vaiables
+    total_Amount=0
+    amount=0
+    bet_Amount_Pergame=1
+    stake_Valueper_Day=100
+    number_Of_DayLoose=0
+    number_Of_Day_Win=0
+    luck_Day=0
+    unLuck_Day=0
+    count=0 
 
-   declare -A dayHistory
-   function bet()
-   {
-     checkWinOrloose=$((RANDOM%2))
-     if [ $checkWinOrloose -eq 1 ]
-      then
-      win=$(( $win+1))
-      stakeValueperDay=$(( $stakeValueperDay+$betAmountpergame ))
-      else
-      loose=$(( $loose+1))
-      stakeValueperDay=$(( $stakeValueperDay-$betAmountpergame ))
+    declare -A totalAmount1
 
-     fi
-   }
+     
+      function startBetting()
+       {
+         checkWinOrloose=$((RANDOM%2))
+    	  if [ $checkWinOrloose -eq 1 ]
+     	  then
+     		  stake_Valueper_Day=$(( $stake_Valueper_Day+$bet_Amount_Pergame ))
+     	  else
+     	 	  stake_Valueper_Day=$(( $stake_Valueper_Day-$bet_Amount_Pergame ))
+    	  fi
+       }
+ 
 
-    function gambler
-    {
-     for ((day=1;day<=20;day++ ))
-      do
-       dictionary
-       stakeValueperDay=100 
-       while [ $stakeValueperDay -lt  $MAXAMOUNTFORPLAY  ] && [ $stakeValueperDay -gt  $MINAMOUNTFORPLAY ]
-        do
-        bet
-      done
-     done
-   }
+    function gambling()
+    { 
+       while[ $totalAmount -gt 0 ]
+       do
+   	 for ((day=1;day<=NUMBER_OF_DAYS;day++ ))
+     	 do
+      	 stake_Valueper_Day=100
+      	 while [ $stake_Valueper_Day -lt  $MAX_AMOUNT_FORPLAY  ] && [ $stake_Valueper_Day -gt  $MIN_AMOUNT_FORPLAY ]
+       	 do
+        	 startBetting
+       	 done
+        	 amount=$(($stake_Valueper_Day-$STAKE))
+        	 total_Amount=$(($total_Amount+$amount))
+          count=$count+1
+        	 totalAmount1[$count]=$total_Amount
+        	 echo $total_Amount 
+ 
+       	 if [ $amount -eq $MIN_AMOUNT_FORPLAY ]
+           then
+            ((win++))
+          else
+            ((loose++))
+     	    fi
+          done
+  
+          lucky_Day=`for i in ${!totalAmount1[@]} 
+                      do
+                         echo $i ${totalAmount1[$i]}
+                      done|sort -rn -k3 | head -1`
+          unLucky_Day=`for i in ${!totalAmount1[@]} 
+                       do
+                         echo $i ${totalAmount1[$i]}
+                       done|sort -rn -k3 | tail -1`
+       done
+   
 
-  function dictionary
-  {
-       if [ $stakeValueperDay -eq $MINAMOUNTFORPLAY ]
-        then
-        numberofdaywin=$(($numberofdaywin+1))
-        dayHistory[$day]=$(($stakeValueperDay-$STAKE))
-        totalAmount=$(($totalAmount-$MINAMOUNTFORPLAY))
+ }
+ gambling
+  
 
-        else
-        numberofdayloose=$(($numberofdayloose+1))
-        dayHistory[$day]=$(($stakeValueperDay-$STAKE))
-        totalAmount=$(($totalAmount+$stakeValueperDay-$STAKE))
-      fi
-
-  }
-
-  gambler
-  echo ${dayHistory[@]}
-  echo "number of day looose" $numberofdayloose
-  echo "number of day win " $numberofdaywin
