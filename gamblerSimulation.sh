@@ -1,59 +1,77 @@
   #!/bin/bash -x
+   
+	 echo "welcome gamble program"
+	 #constants
+    STAKE=100 
+    NUMBER_OF_DAYS=20
+    PERCENT=50
+    MIN_AMOUNT_FORPLAY=$(( $STAKE*$PERCENT/100))
+    MAX_AMOUNT_FORPLAY=$(( $STAKE+$MIN_AMOUNT_FORPLAY))
+    #vaiables
+    total_Amount=0
+    amount=0
+    bet_Amount_Pergame=1
+    stake_Valueper_Day=100
+    number_Of_DayLoose=0
+    number_Of_Day_Win=0
+    luck_Day=0
+    unLuck_Day=0
+    count=0 
 
-   STAKE=100 
-   totalAmount=0
-   amount=0
-   betAmountpergame=1
-   numberOfdaysforplay=20
-   win=0
-   loose=0
-   stakeValueperDay=100
-   percent=50
-   numberofdayloose=0
-   numberofdaywin=0
-   luckday=0
-   unLuckDay=0 
-   count=0
-   MINAMOUNTFORPLAY=$(( $STAKE*$percent/100))
-   MAXAMOUNTFORPLAY=$(( $STAKE+$MINAMOUNTFORPLAY))
+    declare -A totalAmount1
 
-   declare -A totalAmount1
-   function bet()
-   {
-     checkWinOrloose=$((RANDOM%2))
-     if [ $checkWinOrloose -eq 1 ]
-      then
-       stakeValueperDay=$(( $stakeValueperDay+$betAmountpergame ))
-      else
-       stakeValueperDay=$(( $stakeValueperDay-$betAmountpergame ))
-     fi
-   }
-
-    function gambler
+     
+  
+	 function startBetting()
     {
-     for ((day=1;day<=20;day++ ))
-      do
-       stakeValueperDay=100
-       while [ $stakeValueperDay -lt  $MAXAMOUNTFORPLAY  ] && [ $stakeValueperDay -gt  $MINAMOUNTFORPLAY ]
-        do
-         bet
-        done
-         amount=$(($stakeValueperDay-$STAKE))
-         totalAmount=$(($totalAmount+$amount))
-         count=$(($count+1))
-         totalAmount1[$count]=$totalAmount
-         echo $totalAmount 
+   	  checkWinOrloose=$((RANDOM%2))
+    	  if [ $checkWinOrloose -eq 1 ]
+     	  then
+     		  stake_Valueper_Day=$(( $stake_Valueper_Day+$bet_Amount_Pergame ))
+     	  else
+     	 	  stake_Valueper_Day=$(( $stake_Valueper_Day-$bet_Amount_Pergame ))
+    	  fi
+    }
  
-        if [ $amount -eq $MINAMOUNTFORPLAY ]
-         then
+
+    function gambling()
+    { 
+	    while[ $totalAmount -gt 0 ]
+       do
+   	 for ((day=1;day<=NUMBER_OF_DAYS;day++ ))
+     	 do
+      	 stake_Valueper_Day=100
+      	 while [ $stake_Valueper_Day -lt  $MAX_AMOUNT_FORPLAY  ] && [ $stake_Valueper_Day -gt  $MIN_AMOUNT_FORPLAY ]
+       	 do
+        	 startBetting
+       	 done
+        	 amount=$(($stake_Valueper_Day-$STAKE))
+        	 total_Amount=$(($total_Amount+$amount))
+          count=$count+1
+        	 totalAmount1[$count]=$total_Amount
+        	 echo $total_Amount 
+ 
+       	 if [ $amount -eq $MIN_AMOUNT_FORPLAY ]
+           then
             ((win++))
-         else
+          else
             ((loose++))
-        fi
+     	    fi
+          done
+  
+          lucky_Day=`for i in ${!totalAmount1[@]} 
+                      do
+                         echo $i ${totalAmount1[$i]}
+                      done|sort -rn-k3 | head -1`
+          unLucky_Day=`for i in ${!totalAmount1[@]} 
+                       do
+                         echo $i ${totalAmount1[$i]}
+                       done|sort -rn-k3 | tail -1`
         done
-       luckyDay=$(printf "%s\n" ${totalAmount1[@]} | sort -nr | head -1 )
-       unLuckyDay=$(printf "%s\n" ${totalAmount1[@]} |sort -nr | tail -1 )
+   
 
  }
- gambler
+ gambling
+  
+
 
