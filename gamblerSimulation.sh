@@ -69,8 +69,8 @@
 		}
 
 	function unluckyDay(){
-			unLucky_Day=`for i in ${!totalMonthCollection[@]} 
-							 	do
+			unLucky_Day=`for i in ${!totalMonthCollection[@]}
+								do
 									echo $i ${totalMonthCollection[$i]}
                       done|sort -rn-k3 | tail -1`
 	
