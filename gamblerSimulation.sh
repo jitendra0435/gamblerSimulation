@@ -61,18 +61,18 @@
 		}
 
 	function luckyDay(){
-		
-			lucky_Day=`for i in ${!totalMonthCollection[@]} 
-							do
-								echo $i ${totalMonthCollection[$i]}
-							done|sort -rn-k3 | head -1`
+				
+				lucky_Day=`for i in ${!totalMonthCollection[@]}
+								do
+									echo $i ${totalMonthCollection[$i]}
+								done|sort -rn-k3 | head -1`
 		}
 
 	function unluckyDay(){
-			unLucky_Day=`for i in ${!totalMonthCollection[@]}
-								do
-									echo $i ${totalMonthCollection[$i]}
-                      done|sort -rn-k3 | tail -1`
+				unLucky_Day=`for i in ${!totalMonthCollection[@]}
+								  do
+										echo $i ${totalMonthCollection[$i]}
+								done|sort -rn-k3 | tail -1`
 	
 		}
   
